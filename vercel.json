@@ -1,13 +1,16 @@
 {
   "version": 2,
   "functions": {
-    "api/main.go": {
-      "runtime": "@vercel/go@1.2.2",
+    "api/put.go": {
+      "includeFiles": "serviceAccount.json"
+    },
+    "api/get.go": {
       "includeFiles": "serviceAccount.json"
     }
   },
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/api/:key", "destination": "/api/main" }
+    { "source": "/api/put/:key", "destination": "/api/put" },
+    { "source": "/api/get/:key", "destination": "/api/get" }
   ]
 }

@@ -3,7 +3,6 @@ package storage
 import (
 	"cloud.google.com/go/firestore"
 	"context"
-	"errors"
 	firebase "firebase.google.com/go/v4"
 	"google.golang.org/api/option"
 	"time"
@@ -11,7 +10,7 @@ import (
 
 type Storage interface {
 	Add(key, value string) error
-	Get(key string) (string, error)
+	Get(key string) (map[time.Time]string, error)
 	Close()
 }
 
@@ -48,8 +47,24 @@ func (storage firestoreStorage) Add(key, value string) error {
 	return err
 }
 
-func (storage firestoreStorage) Get(key string) (string, error) {
-	return "", errors.New("Implement me!")
+func (storage firestoreStorage) Get(key string) (map[time.Time]string, error) {
+	docs, err := storage.client.Collection(key).DocumentRefs(storage.context).GetAll()
+	if err != nil {
+		return nil, nil
+	}
+
+	allData := make(map[time.Time]string)
+	for _, doc := range docs {
+		docsnap, err := doc.Get(storage.context)
+		if err != nil {
+			continue
+		}
+		data := docsnap.Data()
+		time := data["time"].(time.Time)
+		value := data["value"].(string)
+		allData[time] = value
+	}
+	return allData, nil
 }
 
 func (storage firestoreStorage) Close() {

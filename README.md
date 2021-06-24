@@ -10,7 +10,7 @@ curl \
 -X POST \
 --header "Authorization: Token [API_KEY]" \
 --data "{\"value\": \"[ANY_DATA_YOU_WANT]\"}" \
-https://[DeploymentName].vercel.app/api/[BUCKET-KEY]
+https://[DeploymentName].vercel.app/api/put/[BUCKET-KEY]
 ```
 
 For example:
@@ -21,11 +21,23 @@ curl \
 -X POST \
 --header "Authorization: Token ABC123" \
 --data "{\"value\": \"5002\"}" \
-https://valuestorage.vercel.app/api/buildTimes
+https://valuestorage.vercel.app/api/put/buildTimes
 ```
 
 ### Retrieve values
-//TODO - Needs to implemented
+To get a nice looking chart from all the values you saved you
+have to make a simple curl request:
+```
+curl \
+-X POST \
+--header "Authorization: Token [API_KEY]" \
+https://[DeploymentName].vercel.app/api/get/[BUCKET-KEY]
+```
+
+This will return an URL to `quickchart.io`.
+You can open this URL to see a nice graph like the following:
+
+<img src="chart.png" />
 
 ### See values
 Simply you go to your Firebase project and select Firestore.
@@ -42,5 +54,5 @@ Simply you go to your Firebase project and select Firestore.
 * Place and rename the downloaded file at `api/serviceAccount.json`
 
 ### Vercel
-* Change the currently hardcoded API Token `authorizationToken` in `api/main.go`
+* Change the currently hardcoded API Token `authorizationToken` in `apicommon/checkToken.go`
 * Run `vercel`
